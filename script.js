@@ -83,6 +83,9 @@ class MouseHealthTest {
         this.updateProgress();
         this.updateTestInfo('Button Test', 'Click all three mouse buttons to test functionality');
         
+        // Update status
+        this.updateTestStatus('🔄', 'Testing button functionality...');
+        
         // Bind button test events
         document.querySelectorAll('.test-button').forEach(button => {
             // Prevent context menu on right-click
@@ -97,8 +100,9 @@ class MouseHealthTest {
                     this.testData.button.left = true;
                     e.currentTarget.classList.add('completed');
                     e.currentTarget.querySelector('.button-indicator').textContent = '✓ Left Clicked!';
+                    this.updateTestStatus('✅', 'Left button test completed!');
+                    this.checkButtonCompletion();
                 }
-                this.checkButtonCompletion();
             });
             
             // Right click
@@ -109,8 +113,9 @@ class MouseHealthTest {
                     this.testData.button.right = true;
                     e.currentTarget.classList.add('completed');
                     e.currentTarget.querySelector('.button-indicator').textContent = '✓ Right Clicked!';
+                    this.updateTestStatus('✅', 'Right button test completed!');
+                    this.checkButtonCompletion();
                 }
-                this.checkButtonCompletion();
             });
             
             // Middle click
@@ -121,6 +126,7 @@ class MouseHealthTest {
                     this.testData.button.middle = true;
                     e.currentTarget.classList.add('completed');
                     e.currentTarget.querySelector('.button-indicator').textContent = '✓ Middle Clicked!';
+                    this.updateTestStatus('✅', 'Middle button test completed!');
                     this.checkButtonCompletion();
                 }
             });
@@ -134,18 +140,30 @@ class MouseHealthTest {
             if (this.testData.button.right) partialScore += 5;
             if (this.testData.button.middle) partialScore += 5;
             
-            // If no buttons were clicked, give minimum score
-            if (partialScore === 0) partialScore = 5;
-            
+            // If no buttons were clicked, give 0 points (no attempt made)
             this.testScores.button = partialScore;
-            this.enableNextStep();
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/15`);
+            this.scrollToNextButton();
         });
     }
 
     checkButtonCompletion() {
         if (this.testData.button.left && this.testData.button.right && this.testData.button.middle) {
             this.testScores.button = 15;
+            this.updateTestStatus('🎉', 'All buttons tested successfully!');
+            this.scrollToNextButton();
             this.enableNextStep();
+        }
+    }
+
+    scrollToNextButton() {
+        // Scroll to the next step button with smooth animation
+        const nextButton = document.getElementById('next-step');
+        if (nextButton) {
+            nextButton.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
         }
     }
 
@@ -181,14 +199,23 @@ class MouseHealthTest {
             // Enable next step when both directions are tested
             if (upScrolls >= 3 && downScrolls >= 3) {
                 this.testScores.scroll = 15;
+                this.updateTestStatus('🎉', 'Scroll test completed successfully!');
+                this.scrollToNextButton();
                 this.enableNextStep();
             }
         });
         
         // Add skip button for scroll test
         this.addSkipButton('Scroll Test', () => {
-            this.testScores.scroll = 5; // Give minimum score for skipping
-            this.enableNextStep();
+            // Calculate partial score based on what was actually completed
+            let partialScore = 0;
+            if (upScrolls >= 3) partialScore += 7; // Half points for up scrolls
+            if (downScrolls >= 3) partialScore += 8; // Half points for down scrolls
+            
+            // If no scrolling was done, give 0 points (no attempt made)
+            this.testScores.scroll = partialScore;
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/15`);
+            this.scrollToNextButton();
         });
     }
 
@@ -240,6 +267,8 @@ class MouseHealthTest {
                 testCompleted = true;
                 this.calculateTrackingMetrics(points);
                 this.testScores.tracking = 20;
+                this.updateTestStatus('🎉', 'Tracking test completed successfully!');
+                this.scrollToNextButton();
                 this.enableNextStep();
             }
         });
@@ -272,14 +301,26 @@ class MouseHealthTest {
                     this.testScores.tracking = 5;
                 }
                 testCompleted = true;
+                this.updateTestStatus('⏰', `Time's up! Score: ${this.testScores.tracking}/20`);
+                this.scrollToNextButton();
                 this.enableNextStep();
             }
         }, 8000);
         
         // Add skip button for tracking test
         this.addSkipButton('Pointer Tracking', () => {
-            this.testScores.tracking = 5; // Give minimum score for skipping
-            this.enableNextStep();
+            // Calculate partial score based on what was actually completed
+            let partialScore = 0;
+            if (points.length > 5) {
+                partialScore = 15;
+            } else if (points.length > 2) {
+                partialScore = 10;
+            }
+            // If no points drawn, partialScore remains 0
+            
+            this.testScores.tracking = partialScore;
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/20`);
+            this.scrollToNextButton();
         });
     }
 
@@ -353,6 +394,8 @@ class MouseHealthTest {
                 else this.testScores.doubleclick = 0;
                 
                 if (this.testData.doubleclick.times.length >= 3) {
+                    this.updateTestStatus('🎉', 'Double-click test completed successfully!');
+                    this.scrollToNextButton();
                     this.enableNextStep();
                 }
             }
@@ -362,8 +405,18 @@ class MouseHealthTest {
         
         // Add skip button for double click test
         this.addSkipButton('Double-Click Speed', () => {
-            this.testScores.doubleclick = 5; // Give minimum score for skipping
-            this.enableNextStep();
+            // Calculate partial score based on what was actually completed
+            let partialScore = 0;
+            if (this.testData.doubleclick.times.length >= 2) {
+                partialScore = 10;
+            } else if (this.testData.doubleclick.times.length >= 1) {
+                partialScore = 7;
+            }
+            // If no double-clicks attempted, partialScore remains 0
+            
+            this.testScores.doubleclick = partialScore;
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/15`);
+            this.scrollToNextButton();
         });
     }
 
@@ -423,6 +476,8 @@ class MouseHealthTest {
                 document.removeEventListener('mousemove', mouseMoveHandler);
                 document.removeEventListener('mouseup', mouseUpHandler);
                 
+                this.updateTestStatus('🎉', 'Drag & Drop test completed successfully!');
+                this.scrollToNextButton();
                 this.enableNextStep();
             } else {
                 // Reset position if not dropped on target
@@ -461,8 +516,12 @@ class MouseHealthTest {
             dragSource.style.zIndex = '';
             dragSource.classList.remove('dragging');
             
-            this.testScores.drag = 5; // Give minimum score for skipping
-            this.enableNextStep();
+            // Calculate partial score based on what was actually completed
+            let partialScore = 0; // No attempt made = 0 points
+            
+            this.testScores.drag = partialScore;
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/15`);
+            this.scrollToNextButton();
         });
     }
 
@@ -496,8 +555,18 @@ class MouseHealthTest {
         
         // Add skip button for polling test
         this.addSkipButton('Polling Rate', () => {
-            this.testScores.polling = 5; // Give minimum score for skipping
-            this.enableNextStep();
+            // Calculate partial score based on what was actually completed
+            let partialScore = 0;
+            if (eventCount > 50) {
+                partialScore = 10;
+            } else if (eventCount > 20) {
+                partialScore = 7;
+            }
+            // If no events detected, partialScore remains 0
+            
+            this.testScores.polling = partialScore;
+            this.updateTestStatus('⏭️', `Test skipped - Score: ${partialScore}/20`);
+            this.scrollToNextButton();
         });
     }
 
@@ -910,7 +979,7 @@ class MouseHealthTest {
             ctx.textAlign = 'center';
             ctx.font = '500 16px Inter, Arial, sans-serif';
             ctx.fillStyle = '#666666';
-            ctx.fillText('Test your mouse at clicklab.com', baseWidth / 2, baseHeight - padding + 8);
+            ctx.fillText('Test your mouse at clicklab.vercel.app', baseWidth / 2, baseHeight - padding + 8);
 
             resolve(canvas);
         });
@@ -974,12 +1043,27 @@ class MouseHealthTest {
         skipButton.className = 'skip-button';
         skipButton.addEventListener('click', () => {
             onSkip();
+            // Automatically go to next test after skipping
+            setTimeout(() => {
+                this.nextStep();
+            }, 500); // Small delay for better UX
         });
 
         // Find the current test step element to insert the button
         const currentStepElement = document.getElementById(this.getTestStepId(this.currentStep));
         if (currentStepElement) {
             currentStepElement.appendChild(skipButton);
+        }
+    }
+
+    updateTestStatus(icon, message) {
+        const statusItem = document.querySelector('.status-item');
+        if (statusItem) {
+            const iconSpan = statusItem.querySelector('.status-icon');
+            const messageSpan = statusItem.querySelector('span:last-child');
+            
+            if (iconSpan) iconSpan.textContent = icon;
+            if (messageSpan) messageSpan.textContent = message;
         }
     }
 

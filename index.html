@@ -8,19 +8,19 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://clicklab.com/">
+    <meta property="og:url" content="https://clicklab.vercel.app/">
     <meta property="og:title" content="ClickLab - Mouse Performance Test">
     <meta property="og:description" content="Test your mouse performance and get a health score in under 3 minutes!">
-    <meta property="og:image" content="https://clicklab.com/og-image.png">
+    <meta property="og:image" content="https://clicklab.vercel.app/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://clicklab.com/">
+    <meta property="twitter:url" content="https://clicklab.vercel.app/">
     <meta property="twitter:title" content="ClickLab - Mouse Performance Test">
     <meta property="twitter:description" content="Test your mouse performance and get a health score in under 3 minutes!">
-    <meta property="twitter:image" content="https://clicklab.com/og-image.png">
+    <meta property="twitter:image" content="https://clicklab.vercel.app/og-image.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,24 +74,47 @@
             <div class="test-area">
                 <!-- Button Test -->
                 <div id="button-test" class="test-step active">
+                    <div class="test-instructions">
+                        <h3>Test Instructions</h3>
+                        <p>Click each button using the correct mouse button. This tests your mouse's button functionality.</p>
+                    </div>
                     <div class="button-grid">
                         <div class="test-button" data-button="left">
                             <span class="button-label">Left Click</span>
                             <div class="button-indicator">Click me!</div>
+                            <div class="button-progress">
+                                <div class="progress-dot"></div>
+                            </div>
                         </div>
                         <div class="test-button" data-button="right">
                             <span class="button-label">Right Click</span>
                             <div class="button-indicator">Click me!</div>
+                            <div class="button-progress">
+                                <div class="progress-dot"></div>
+                            </div>
                         </div>
                         <div class="test-button" data-button="middle">
                             <span class="button-label">Middle Click</span>
                             <div class="button-indicator">Click me!</div>
+                            <div class="button-progress">
+                                <div class="progress-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-status">
+                        <div class="status-item">
+                            <span class="status-icon">🔄</span>
+                            <span>Testing button functionality...</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Scroll Test -->
                 <div id="scroll-test" class="test-step">
+                    <div class="test-instructions">
+                        <h3>Test Instructions</h3>
+                        <p>Scroll up and down in the designated area. This tests your scroll wheel's responsiveness and accuracy.</p>
+                    </div>
                     <div class="scroll-container">
                         <div class="scroll-area">
                             <div class="scroll-content">
@@ -111,6 +134,12 @@
                                 <span class="stat-label">Down Scrolls:</span>
                                 <span id="down-scrolls">0</span>
                             </div>
+                        </div>
+                    </div>
+                    <div class="test-status">
+                        <div class="status-item">
+                            <span class="status-icon">📊</span>
+                            <span>Analyzing scroll performance...</span>
                         </div>
                     </div>
                 </div>
@@ -299,7 +328,7 @@
                     
                     <div class="card-footer">
                         <p id="share-assessment">Your mouse is in excellent condition!</p>
-                        <small>Test your mouse at clicklab.com</small>
+                        <small>Test your mouse at clicklab.vercel.app</small>
                     </div>
                 </div>
                 

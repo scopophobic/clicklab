@@ -1022,3 +1022,83 @@ body {
 }
 
 /* Responsive Design */
+
+/* Test Instructions */
+.test-instructions {
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.test-instructions h3 {
+    color: #000000;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.test-instructions p {
+    color: #666666;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Button Progress Indicators */
+.button-progress {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    background: #cccccc;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.test-button.completed .progress-dot {
+    background: #00ff00;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Test Status */
+.test-status {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.status-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.status-item span:last-child {
+    color: #000000;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Enhanced Button Test */
