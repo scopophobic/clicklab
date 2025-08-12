@@ -32,4 +32,8 @@ Download or copy beautiful result cards to share on social media.
 
 **Test your mouse now!** Visit the deployed app and start ClickLab.
 
+---
+
+**Created by [scopophobic](https://github.com/scopophobic)**
+
 

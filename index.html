@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickLab - Mouse Performance Test</title>
     <meta name="description" content="Test your mouse performance with ClickLab's interactive diagnostic tool. Get a Mouse Health Score and shareable report in under 3 minutes.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://clicklab.com/">
+    <meta property="og:title" content="ClickLab - Mouse Performance Test">
+    <meta property="og:description" content="Test your mouse performance and get a health score in under 3 minutes!">
+    <meta property="og:image" content="https://clicklab.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://clicklab.com/">
+    <meta property="twitter:title" content="ClickLab - Mouse Performance Test">
+    <meta property="twitter:description" content="Test your mouse performance and get a health score in under 3 minutes!">
+    <meta property="twitter:image" content="https://clicklab.com/og-image.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,6 +29,24 @@
 </head>
 <body>
     <div class="container">
+        <!-- Mobile/No-Mouse Detection Screen -->
+        <div id="no-mouse-screen" class="screen">
+            <div class="no-mouse-content">
+                <h1>🤖 Oops!</h1>
+                <div class="fun-message">
+                    <p class="main-text">This is a test for <strong>mouse performance</strong></p>
+                    <p class="sub-text">You don't have one to begin with! 🖱️</p>
+                    <p class="funny-text">Come back with a different device, you silly human! 😄</p>
+                </div>
+                <div class="device-icons">
+                    <span>💻</span>
+                    <span>🖥️</span>
+                    <span>🖱️</span>
+                </div>
+                <p class="note">ClickLab needs a real mouse to work its magic!</p>
+            </div>
+        </div>
+
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
             <div class="welcome-content">
@@ -206,6 +241,10 @@
                 <div class="action-buttons">
                     <button id="share-results" class="btn btn-secondary">Share Results</button>
                     <button id="retake-test" class="btn btn-primary">Take Test Again</button>
+                </div>
+                
+                <div class="credits">
+                    <p><a href="https://github.com/scopophobic" target="_blank">scopophobic</a></p>
                 </div>
             </div>
         </div>
