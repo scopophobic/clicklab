@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Health Test - Check Your Mouse Performance</title>
+    <meta name="description" content="Test your mouse performance with our interactive diagnostic tool. Get a Mouse Health Score and shareable report in under 3 minutes.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <h1>🖱 Mouse Health Test</h1>
+                <p class="subtitle">Test your mouse performance in under 3 minutes</p>
+                <div class="features">
+                    <div class="feature">
+                        <span class="icon">⚡</span>
+                        <span>Fast & Fun</span>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">🎯</span>
+                        <span>6-Step Test</span>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">📊</span>
+                        <span>Health Score</span>
+                    </div>
+                    <div class="feature">
+                        <span class="icon">🔗</span>
+                        <span>Shareable Report</span>
+                    </div>
+                </div>
+                <button id="start-test" class="btn btn-primary">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Test Container -->
+        <div id="test-container" class="screen">
+            <div class="test-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <span id="progress-text">Step 1 of 6</span>
+                </div>
+                <div class="test-title">
+                    <h2 id="current-test-title">Button Test</h2>
+                    <p id="current-test-description">Click all three mouse buttons to test functionality</p>
+                </div>
+            </div>
+
+            <div class="test-area">
+                <!-- Button Test -->
+                <div id="button-test" class="test-step active">
+                    <div class="button-grid">
+                        <div class="test-button" data-button="left">
+                            <span class="button-label">Left Click</span>
+                            <div class="button-indicator">Click me!</div>
+                        </div>
+                        <div class="test-button" data-button="right">
+                            <span class="button-label">Right Click</span>
+                            <div class="button-indicator">Click me!</div>
+                        </div>
+                        <div class="test-button" data-button="middle">
+                            <span class="button-label">Middle Click</span>
+                            <div class="button-indicator">Click me!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scroll Test -->
+                <div id="scroll-test" class="test-step">
+                    <div class="scroll-container">
+                        <div class="scroll-area">
+                            <div class="scroll-content">
+                                <p>Scroll up and down in this area to test your scroll wheel</p>
+                                <div class="scroll-indicators">
+                                    <div class="scroll-indicator up">↑ Scroll Up</div>
+                                    <div class="scroll-indicator down">↓ Scroll Down</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scroll-stats">
+                            <div class="stat">
+                                <span class="stat-label">Up Scrolls:</span>
+                                <span id="up-scrolls">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Down Scrolls:</span>
+                                <span id="down-scrolls">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pointer Tracking Test -->
+                <div id="pointer-test" class="test-step">
+                    <div class="tracking-area">
+                        <canvas id="tracking-canvas" width="600" height="400"></canvas>
+                        <div class="tracking-instructions">
+                            <p>Move your mouse smoothly across the canvas</p>
+                            <div class="tracking-stats">
+                                <div class="stat">
+                                    <span class="stat-label">Smoothness:</span>
+                                    <span id="smoothness-score">-</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Jitter:</span>
+                                    <span id="jitter-score">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Double-Click Speed Test -->
+                <div id="doubleclick-test" class="test-step">
+                    <div class="doubleclick-area">
+                        <div class="click-target" id="click-target">
+                            <span>Double-click here as fast as you can!</span>
+                        </div>
+                        <div class="click-stats">
+                            <div class="stat">
+                                <span class="stat-label">Best Time:</span>
+                                <span id="best-time">-</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Average Time:</span>
+                                <span id="avg-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drag & Drop Test -->
+                <div id="drag-test" class="test-step">
+                    <div class="drag-area">
+                        <div class="drag-source" id="drag-source">
+                            <span>Drag me to the target</span>
+                        </div>
+                        <div class="drag-target" id="drag-target">
+                            <span>Drop here</span>
+                        </div>
+                        <div class="drag-stats">
+                            <div class="stat">
+                                <span class="stat-label">Hold Time:</span>
+                                <span id="hold-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Polling Rate Test -->
+                <div id="polling-test" class="test-step">
+                    <div class="polling-area">
+                        <div class="polling-instructions">
+                            <p>Move your mouse in small circles for 10 seconds</p>
+                            <div class="countdown" id="polling-countdown">10</div>
+                        </div>
+                        <div class="polling-stats">
+                            <div class="stat">
+                                <span class="stat-label">Events/sec:</span>
+                                <span id="polling-rate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-controls">
+                <button id="next-step" class="btn btn-primary" disabled>Next Step</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-content">
+                <h2>🎉 Test Complete!</h2>
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span id="final-score">85</span>
+                        <span class="score-label">Mouse Health Score</span>
+                    </div>
+                </div>
+                
+                <div class="score-breakdown">
+                    <h3>Performance Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="test-name">Button Test</span>
+                        <span class="test-score" id="button-score">15/15</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="test-name">Scroll Test</span>
+                        <span class="test-score" id="scroll-score">15/15</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="test-name">Pointer Tracking</span>
+                        <span class="test-score" id="tracking-score">20/20</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="test-name">Double-Click Speed</span>
+                        <span class="test-score" id="doubleclick-score">15/15</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="test-name">Drag & Drop</span>
+                        <span class="test-score" id="drag-score">15/15</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="test-name">Polling Rate</span>
+                        <span class="test-score" id="polling-score">20/20</span>
+                    </div>
+                </div>
+
+                <div class="health-assessment" id="health-assessment">
+                    <h3>Health Assessment</h3>
+                    <p id="assessment-text">Your mouse is in excellent condition!</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="share-results" class="btn btn-secondary">Share Results</button>
+                    <button id="retake-test" class="btn btn-primary">Take Test Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Card Modal -->
+        <div id="share-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Share Your Results</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                
+                <div class="share-card" id="share-card">
+                    <div class="card-header">
+                        <h2>🖱 Mouse Health Test</h2>
+                        <p>Performance Report</p>
+                    </div>
+                    
+                    <div class="card-score">
+                        <div class="score-display">
+                            <span id="share-score">85</span>
+                            <span class="score-label">Mouse Health Score</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-breakdown">
+                        <div class="breakdown-item">
+                            <span>Button Test</span>
+                            <span id="share-button-score">15/15</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Scroll Test</span>
+                            <span id="share-scroll-score">15/15</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Pointer Tracking</span>
+                            <span id="share-tracking-score">20/20</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Double-Click Speed</span>
+                            <span id="share-doubleclick-score">15/15</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Drag & Drop</span>
+                            <span id="share-drag-score">15/15</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Polling Rate</span>
+                            <span id="share-polling-score">20/20</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <p id="share-assessment">Your mouse is in excellent condition!</p>
+                        <small>Test your mouse at mousetest.com</small>
+                    </div>
+                </div>
+                
+                <div class="share-options">
+                    <button id="copy-image" class="share-btn">
+                        <span>📋</span>
+                        Copy Image
+                    </button>
+                    <button id="download-image" class="share-btn">
+                        <span>💾</span>
+                        Download
+                    </button>
+                    <button id="share-twitter" class="share-btn">
+                        <span>🐦</span>
+                        Twitter
+                    </button>
+                    <button id="share-facebook" class="share-btn">
+                        <span>📘</span>
+                        Facebook
+                    </button>
+                    <button id="share-whatsapp" class="share-btn">
+                        <span>💬</span>
+                        WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
