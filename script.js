@@ -387,11 +387,12 @@ class MouseHealthTest {
                 document.getElementById('best-time').textContent = `${best}ms`;
                 document.getElementById('avg-time').textContent = `${this.testData.doubleclick.average}ms`;
                 
-                // Calculate score
-                if (best < 100) this.testScores.doubleclick = 15;
-                else if (best < 200) this.testScores.doubleclick = 10;
-                else if (best < 300) this.testScores.doubleclick = 5;
-                else this.testScores.doubleclick = 0;
+                // Calculate score based on speed (faster = higher score)
+                if (best < 100) this.testScores.doubleclick = 15;      // Excellent: <100ms
+                else if (best < 150) this.testScores.doubleclick = 12;  // Good: 100-150ms
+                else if (best < 200) this.testScores.doubleclick = 10;  // Fair: 150-200ms
+                else if (best < 300) this.testScores.doubleclick = 7;   // Poor: 200-300ms
+                else this.testScores.doubleclick = 5;                   // Very Poor: >300ms
                 
                 if (this.testData.doubleclick.times.length >= 3) {
                     this.updateTestStatus('🎉', 'Double-click test completed successfully!');
@@ -557,10 +558,14 @@ class MouseHealthTest {
         this.addSkipButton('Polling Rate', () => {
             // Calculate partial score based on what was actually completed
             let partialScore = 0;
-            if (eventCount > 50) {
-                partialScore = 10;
-            } else if (eventCount > 20) {
-                partialScore = 7;
+            if (eventCount > 100) {
+                partialScore = 15;
+            } else if (eventCount > 60) {
+                partialScore = 12;
+            } else if (eventCount > 30) {
+                partialScore = 8;
+            } else if (eventCount > 10) {
+                partialScore = 5;
             }
             // If no events detected, partialScore remains 0
             
@@ -576,11 +581,13 @@ class MouseHealthTest {
         
         document.getElementById('polling-rate').textContent = `${this.testData.polling.rate} events/sec`;
         
-        // Calculate polling score
-        if (this.testData.polling.rate >= 100) this.testScores.polling = 20;
-        else if (this.testData.polling.rate >= 60) this.testScores.polling = 15;
-        else if (this.testData.polling.rate >= 30) this.testScores.polling = 10;
-        else this.testScores.polling = 5;
+        // Calculate polling score based on event rate
+        if (this.testData.polling.rate >= 100) this.testScores.polling = 20;      // Excellent: 100+ events/sec
+        else if (this.testData.polling.rate >= 80) this.testScores.polling = 18;  // Very Good: 80-99 events/sec
+        else if (this.testData.polling.rate >= 60) this.testScores.polling = 15;  // Good: 60-79 events/sec
+        else if (this.testData.polling.rate >= 40) this.testScores.polling = 12;  // Fair: 40-59 events/sec
+        else if (this.testData.polling.rate >= 20) this.testScores.polling = 8;   // Poor: 20-39 events/sec
+        else this.testScores.polling = 5;                                         // Very Poor: <20 events/sec
         
         // Complete the test
         setTimeout(() => {
@@ -876,11 +883,11 @@ class MouseHealthTest {
                 try { await document.fonts.ready; } catch (_) {}
             }
 
-            // Optimized dimensions for social media (Twitter, WhatsApp)
-            const baseWidth = 1200;  // Better for social media
-            const baseHeight = 630;   // 1.91:1 aspect ratio (Twitter card standard)
-            const padding = 50;
-            const dpr = Math.max(2, Math.floor(window.devicePixelRatio || 2)); // Higher DPR for social media
+            // Dimensions matching the share card design
+            const baseWidth = 600;
+            const baseHeight = 800;
+            const padding = 30;
+            const dpr = Math.max(2, Math.floor(window.devicePixelRatio || 2));
 
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -896,12 +903,15 @@ class MouseHealthTest {
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, baseWidth, baseHeight);
 
-            // Card background
-            ctx.fillStyle = '#f8f8f8';
+            // Card background with gradient effect
+            const gradient = ctx.createLinearGradient(0, 0, 0, baseHeight);
+            gradient.addColorStop(0, '#f8f8f8');
+            gradient.addColorStop(1, '#ffffff');
+            ctx.fillStyle = gradient;
             ctx.fillRect(padding, padding, baseWidth - padding * 2, baseHeight - padding * 2);
 
-            // Header
-            const headerHeight = 80;
+            // Header (black background)
+            const headerHeight = 100;
             ctx.fillStyle = '#000000';
             ctx.fillRect(padding, padding, baseWidth - padding * 2, headerHeight);
 
@@ -911,75 +921,116 @@ class MouseHealthTest {
             ctx.font = '700 32px Inter, Arial, sans-serif';
             ctx.fillText('🖱 ClickLab', baseWidth / 2, padding + 44);
             ctx.font = '500 18px Inter, Arial, sans-serif';
-            ctx.fillText('Mouse Performance Report', baseWidth / 2, padding + 68);
+            ctx.fillText('Mouse Performance Report', baseWidth / 2, padding + 74);
 
-            // Score circle (left side)
-            const centerX = padding + 120;
-            const centerY = padding + headerHeight + 80;
-            const radius = 70;
+            // Score circle (centered)
+            const centerX = baseWidth / 2;
+            const centerY = padding + headerHeight + 120;
+            const radius = 80;
+            
+            // Circle background
             ctx.fillStyle = '#000000';
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
             ctx.fill();
 
             const totalScore = Object.values(this.testScores).reduce((a, b) => a + b, 0);
+            
+            // Score text
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
-            ctx.font = '700 36px Inter, Arial, sans-serif';
-            ctx.fillText(String(totalScore), centerX, centerY + 10);
-            ctx.font = '500 14px Inter, Arial, sans-serif';
-            ctx.fillText('Score', centerX, centerY + 35);
+            ctx.font = '700 44px Inter, Arial, sans-serif';
+            ctx.fillText(String(totalScore), centerX, centerY + 12);
+            ctx.font = '500 16px Inter, Arial, sans-serif';
+            ctx.fillText('Mouse Health Score', centerX, centerY + 42);
 
-            // Assessment (right side of score)
-            const assessX = centerX + 200;
-            const assessY = centerY - 20;
-            let assessmentText = '';
-            if (totalScore >= 80) assessmentText = 'Excellent Condition!';
-            else if (totalScore >= 50) assessmentText = 'Fair Condition';
-            else assessmentText = 'Needs Attention';
+            // Breakdown section background
+            const breakdownY = centerY + 100;
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(padding + 20, breakdownY, baseWidth - (padding + 20) * 2, 200);
 
-            ctx.textAlign = 'left';
+            // Breakdown title
             ctx.fillStyle = '#000000';
-            ctx.font = '700 24px Inter, Arial, sans-serif';
-            ctx.fillText(assessmentText, assessX, assessY + 20);
+            ctx.textAlign = 'left';
+            ctx.font = '700 20px Inter, Arial, sans-serif';
+            ctx.fillText('Test Breakdown:', padding + 40, breakdownY + 30);
 
-            // Breakdown scores (right side)
-            const breakdownX = assessX;
-            const breakdownY = assessY + 60;
-            ctx.font = '700 18px Inter, Arial, sans-serif';
-            ctx.fillText('Test Results:', breakdownX, breakdownY);
-
+            // Breakdown rows
             const tests = [
-                { name: 'Button', score: this.testScores.button, max: 15 },
-                { name: 'Scroll', score: this.testScores.scroll, max: 15 },
-                { name: 'Tracking', score: this.testScores.tracking, max: 20 },
-                { name: 'Double-Click', score: this.testScores.doubleclick, max: 15 },
+                { name: 'Button Test', score: this.testScores.button, max: 15 },
+                { name: 'Scroll Test', score: this.testScores.scroll, max: 15 },
+                { name: 'Pointer Tracking', score: this.testScores.tracking, max: 20 },
+                { name: 'Double-Click Speed', score: this.testScores.doubleclick, max: 15 },
                 { name: 'Drag & Drop', score: this.testScores.drag, max: 15 },
-                { name: 'Polling', score: this.testScores.polling, max: 20 }
+                { name: 'Polling Rate', score: this.testScores.polling, max: 20 }
             ];
 
-            let yPos = breakdownY + 30;
-            const rowGap = 25;
+            let yPos = breakdownY + 60;
+            const rowGap = 28;
+            
             tests.forEach((test, index) => {
+                // Alternating row backgrounds for readability
+                if (index % 2 === 1) {
+                    ctx.fillStyle = '#ededed';
+                    ctx.fillRect(padding + 30, yPos - 20, baseWidth - (padding + 30) * 2, 24);
+                }
+
                 // Test name
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000000';
-                ctx.font = '500 14px Inter, Arial, sans-serif';
-                ctx.fillText(test.name, breakdownX, yPos);
+                ctx.font = '500 16px Inter, Arial, sans-serif';
+                ctx.fillText(test.name, padding + 40, yPos);
 
                 // Test score
                 ctx.textAlign = 'right';
-                ctx.font = '700 14px Inter, Arial, sans-serif';
-                ctx.fillText(`${test.score}/${test.max}`, breakdownX + 120, yPos);
+                ctx.font = '700 16px Inter, Arial, sans-serif';
+                ctx.fillText(`${test.score}/${test.max}`, baseWidth - padding - 40, yPos);
 
                 yPos += rowGap;
             });
 
-            // Footer
+            // Assessment section (white background)
+            const assessY = yPos + 20;
+            const assessHeight = 80;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(padding + 20, assessY, baseWidth - (padding + 20) * 2, assessHeight);
+
+            // Assessment text
+            let assessmentText = '';
+            if (totalScore >= 80) {
+                assessmentText = 'Your mouse is in excellent condition!';
+            } else if (totalScore >= 50) {
+                assessmentText = 'Your mouse has some wear or issues present.';
+            } else {
+                assessmentText = 'Your mouse may need replacement or repair.';
+            }
+
             ctx.textAlign = 'center';
-            ctx.font = '500 16px Inter, Arial, sans-serif';
+            ctx.fillStyle = '#000000';
+            ctx.font = '700 18px Inter, Arial, sans-serif';
+            
+            // Word wrap for assessment
+            const words = assessmentText.split(' ');
+            let line = '';
+            let lineY = assessY + assessHeight / 2 + 6;
+            
+            words.forEach(word => {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > baseWidth - 80) {
+                    ctx.fillText(line, centerX, lineY);
+                    line = word + ' ';
+                    lineY += 25;
+                } else {
+                    line = testLine;
+                }
+            });
+            ctx.fillText(line, centerX, lineY);
+
+            // Footer
+            ctx.font = '500 14px Inter, Arial, sans-serif';
             ctx.fillStyle = '#666666';
-            ctx.fillText('Test your mouse at clicklab.vercel.app', baseWidth / 2, baseHeight - padding + 8);
+            ctx.fillText('Test your mouse at clicklab.vercel.app', centerX, baseHeight - padding + 8);
 
             resolve(canvas);
         });
