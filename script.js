@@ -1,4 +1,4 @@
-// Mouse Health Test Application
+// ClickLab Application
 class MouseHealthTest {
     constructor() {
         this.currentStep = 0;
@@ -714,10 +714,6 @@ class MouseHealthTest {
             this.shareToTwitter();
         });
         
-        document.getElementById('share-facebook').addEventListener('click', () => {
-            this.shareToFacebook();
-        });
-        
         document.getElementById('share-whatsapp').addEventListener('click', () => {
             this.shareToWhatsApp();
         });
@@ -747,7 +743,7 @@ class MouseHealthTest {
         try {
             const canvas = await this.generateShareImage();
             const link = document.createElement('a');
-            link.download = `mouse-health-score-${this.testScores.button + this.testScores.scroll + this.testScores.tracking + this.testScores.doubleclick + this.testScores.drag + this.testScores.polling}.png`;
+            link.download = `clicklab-score-${this.testScores.button + this.testScores.scroll + this.testScores.tracking + this.testScores.doubleclick + this.testScores.drag + this.testScores.polling}.png`;
             link.href = canvas.toDataURL();
             link.click();
             this.showToast('Image downloaded! 💾');
@@ -757,59 +753,78 @@ class MouseHealthTest {
     }
 
     async generateShareImage() {
-        return new Promise((resolve) => {
-            const shareCard = document.getElementById('share-card');
+        return new Promise(async (resolve) => {
+            // Ensure fonts are loaded for crisp rendering
+            if (document.fonts && document.fonts.ready) {
+                try { await document.fonts.ready; } catch (_) {}
+            }
+
+            const baseWidth = 800;
+            const baseHeight = 1000;
+            const padding = 40;
+            const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            
-            // Set canvas size
-            canvas.width = 600;
-            canvas.height = 800;
-            
-            // Fill background
+
+            // High-DPI canvas for sharp output
+            canvas.width = baseWidth * dpr;
+            canvas.height = baseHeight * dpr;
+            canvas.style.width = baseWidth + 'px';
+            canvas.style.height = baseHeight + 'px';
+            ctx.scale(dpr, dpr);
+
+            // Background
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw card background
+            ctx.fillRect(0, 0, baseWidth, baseHeight);
+
+            // Card background
             ctx.fillStyle = '#f8f8f8';
-            ctx.fillRect(20, 20, canvas.width - 40, canvas.height - 40);
-            
-            // Draw header
+            ctx.fillRect(padding, padding, baseWidth - padding * 2, baseHeight - padding * 2);
+
+            // Header
+            const headerHeight = 100;
             ctx.fillStyle = '#000000';
-            ctx.fillRect(20, 20, canvas.width - 40, 80);
-            
+            ctx.fillRect(padding, padding, baseWidth - padding * 2, headerHeight);
+
             // Header text
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 32px Inter';
             ctx.textAlign = 'center';
-            ctx.fillText('🖱 Mouse Health Test', canvas.width / 2, 55);
-            ctx.font = '20px Inter';
-            ctx.fillText('Performance Report', canvas.width / 2, 80);
-            
+            ctx.font = '700 36px Inter, Arial, sans-serif';
+            ctx.fillText('🖱 ClickLab', baseWidth / 2, padding + 44);
+            ctx.font = '500 22px Inter, Arial, sans-serif';
+            ctx.fillText('Mouse Performance Report', baseWidth / 2, padding + 74);
+
             // Score circle
-            const centerX = canvas.width / 2;
-            const centerY = 180;
-            const radius = 60;
-            
+            const centerX = baseWidth / 2;
+            const centerY = padding + headerHeight + 120;
+            const radius = 80;
             ctx.fillStyle = '#000000';
             ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
             ctx.fill();
-            
+
             const totalScore = Object.values(this.testScores).reduce((a, b) => a + b, 0);
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 36px Inter';
             ctx.textAlign = 'center';
-            ctx.fillText(totalScore.toString(), centerX, centerY + 10);
-            ctx.font = '14px Inter';
-            ctx.fillText('Mouse Health Score', centerX, centerY + 35);
-            
-            // Breakdown scores
+            ctx.font = '700 44px Inter, Arial, sans-serif';
+            ctx.fillText(String(totalScore), centerX, centerY + 12);
+            ctx.font = '500 16px Inter, Arial, sans-serif';
+            ctx.fillText('Mouse Health Score', centerX, centerY + 42);
+
+            // Breakdown title
             ctx.fillStyle = '#000000';
-            ctx.font = 'bold 20px Inter';
             ctx.textAlign = 'left';
-            ctx.fillText('Test Breakdown:', 40, 320);
-            
+            ctx.font = '700 22px Inter, Arial, sans-serif';
+            const breakdownTop = centerY + 100;
+            ctx.fillText('Test Breakdown:', padding + 20, breakdownTop);
+
+            // Breakdown rows
+            const nameX = padding + 20;
+            const scoreX = baseWidth - padding - 20;
+            let yPos = breakdownTop + 40;
+            const rowGap = 36;
+
             const tests = [
                 { name: 'Button Test', score: this.testScores.button, max: 15 },
                 { name: 'Scroll Test', score: this.testScores.scroll, max: 15 },
@@ -818,78 +833,69 @@ class MouseHealthTest {
                 { name: 'Drag & Drop', score: this.testScores.drag, max: 15 },
                 { name: 'Polling Rate', score: this.testScores.polling, max: 20 }
             ];
-            
-            let yPos = 360;
-            tests.forEach(test => {
-                ctx.font = '16px Inter';
-                ctx.fillStyle = '#000000';
-                ctx.fillText(test.name, 40, yPos);
-                
-                ctx.font = 'bold 16px Inter';
-                ctx.textAlign = 'right';
-                ctx.fillText(`${test.score}/${test.max}`, canvas.width - 40, yPos);
-                
-                yPos += 30;
-            });
-            
-            // Assessment
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 18px Inter';
-            ctx.fillStyle = '#000000';
-            
-            let assessmentText = '';
-            if (totalScore >= 80) {
-                assessmentText = 'Your mouse is in excellent condition!';
-            } else if (totalScore >= 50) {
-                assessmentText = 'Your mouse has some wear or issues present.';
-            } else {
-                assessmentText = 'Your mouse may need replacement or repair.';
-            }
-            
-            // Word wrap for assessment
-            const words = assessmentText.split(' ');
-            let line = '';
-            let lineY = yPos + 40;
-            
-            words.forEach(word => {
-                const testLine = line + word + ' ';
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > canvas.width - 80) {
-                    ctx.fillText(line, centerX, lineY);
-                    line = word + ' ';
-                    lineY += 25;
-                } else {
-                    line = testLine;
+
+            tests.forEach((test, index) => {
+                // Optional alternating row background for readability
+                if (index % 2 === 1) {
+                    ctx.fillStyle = '#ededed';
+                    ctx.fillRect(padding + 10, yPos - 24, baseWidth - (padding + 10) * 2, 30);
                 }
+
+                // Test name (ensure left alignment each row)
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#000000';
+                ctx.font = '500 18px Inter, Arial, sans-serif';
+                ctx.fillText(test.name, nameX, yPos);
+
+                // Test score (right aligned)
+                ctx.textAlign = 'right';
+                ctx.font = '700 18px Inter, Arial, sans-serif';
+                ctx.fillText(`${test.score}/${test.max}`, scoreX, yPos);
+
+                yPos += rowGap;
             });
-            ctx.fillText(line, centerX, lineY);
-            
+
+            // Assessment box
+            const assessTop = yPos + 20;
+            const assessHeight = 90;
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 2;
+            ctx.fillRect(padding + 20, assessTop, baseWidth - (padding + 20) * 2, assessHeight);
+            ctx.strokeRect(padding + 20, assessTop, baseWidth - (padding + 20) * 2, assessHeight);
+
+            let assessmentText = '';
+            if (totalScore >= 80) assessmentText = 'Your mouse is in excellent condition!';
+            else if (totalScore >= 50) assessmentText = 'Your mouse has some wear or issues present.';
+            else assessmentText = 'Your mouse may need replacement or repair.';
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#000000';
+            ctx.font = '700 18px Inter, Arial, sans-serif';
+            ctx.fillText(assessmentText, baseWidth / 2, assessTop + assessHeight / 2 + 6);
+
             // Footer
-            ctx.font = '14px Inter';
+            ctx.font = '500 14px Inter, Arial, sans-serif';
             ctx.fillStyle = '#666666';
-            ctx.fillText('Test your mouse at mousetest.com', centerX, canvas.height - 40);
-            
+            ctx.fillText('Test your mouse at clicklab.com', baseWidth / 2, baseHeight - padding + 8);
+
             resolve(canvas);
         });
     }
 
     shareToTwitter() {
         const totalScore = Object.values(this.testScores).reduce((a, b) => a + b, 0);
-        const text = `🎯 My Mouse Health Score: ${totalScore}/100! Test your mouse performance with this awesome tool!`;
+        const text = `🎯 My Mouse Health Score: ${totalScore}/100 — tested via ClickLab.`;
         const url = window.location.href;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
         window.open(twitterUrl, '_blank');
     }
 
-    shareToFacebook() {
-        const url = window.location.href;
-        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        window.open(facebookUrl, '_blank');
-    }
+
 
     shareToWhatsApp() {
         const totalScore = Object.values(this.testScores).reduce((a, b) => a + b, 0);
-        const text = `🎯 My Mouse Health Score: ${totalScore}/100! Test your mouse at: ${window.location.href}`;
+        const text = `🎯 My Mouse Health Score: ${totalScore}/100 — tested via ClickLab. Try it: ${window.location.href}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
         window.open(whatsappUrl, '_blank');
     }

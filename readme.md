@@ -1,4 +1,4 @@
-# 🖱 Mouse Health Test
+# 🖱 ClickLab - Mouse Performance Test
 
 A fast, fun, and interactive web-based diagnostic tool to check the performance and health of your computer mouse. Test your mouse in under 3 minutes and get a comprehensive health score!
 
@@ -6,6 +6,7 @@ A fast, fun, and interactive web-based diagnostic tool to check the performance 
 
 - **6-Step Test Flow** - Comprehensive mouse testing in minutes
 - **Real-time Scoring** - Get instant feedback on each test
+- **Multiple Sharing Options** - Twitter, WhatsApp, copy image, and download
 - **Interactive UI** - Engaging, gamified testing experience
 - **Shareable Results** - Share your mouse health score with friends
 - **Responsive Design** - Works on desktop and mobile devices
